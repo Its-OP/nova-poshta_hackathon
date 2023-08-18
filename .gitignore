@@ -1,0 +1,5 @@
+﻿obj/
+bin/
+.vs/
+nlp_processor/GetTosFunction/.key.txt
+.key.txt
