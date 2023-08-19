@@ -18,7 +18,7 @@
     <None Update=".key.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="content.txt">
+    <None Update="content_ukr.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Plugins\ResponderPlugin\GetIntent\config.json">

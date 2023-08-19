@@ -26,10 +26,10 @@ public static class Utils
 
     public static async Task SaveDocumentToMemory(this IKernel kernel, string text)
     {
-        text = await File.ReadAllTextAsync("content.txt");
+        text = await File.ReadAllTextAsync("content_ukr.txt");
         var targetCollectionName = "collection";
 
-        string pattern = @"^\d+\.\s[А-ЩЬЮЯҐЄІЇ\s!\""#$%&'()*+,\-«».\/:;<=>?@^_`{|}~]+$";
+        string pattern = @"(?<=\n|^)(\d+\.\d+\.)(?!\d)";
         var sections = Regex.Split(text, pattern);
 
         var chunks = new List<string>();

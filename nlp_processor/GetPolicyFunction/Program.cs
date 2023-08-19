@@ -8,16 +8,16 @@ var modelKey = File.ReadAllText(".key.txt");
 
 var kernel = new KernelBuilder()
     .WithMemory(new SemanticTextMemory(new VolatileMemoryStore(), new OpenAITextEmbeddingGeneration("text-embedding-ada-002", modelKey)))
-    .WithOpenAIChatCompletionService("gpt-3.5-turbo", modelKey)
+    .WithOpenAIChatCompletionService("gpt-4", modelKey)
     .Build();
 
 await kernel.SaveDocumentToMemory(Utils.GetTextFromPdf("Terms_of_Service.pdf"));
 
-var pluginsDirectory = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "Plugins");
+var pluginsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
 var orchestrationPlugin = kernel.ImportSemanticSkillFromDirectory(pluginsDirectory, "ResponderPlugin");
 
 var context = kernel.CreateNewContext();
-var query = "Який документ мені потрібен для отримання посилки ?";
+var query = "Які документи зазначені в пунктах 12.2.1 - 12.2.11 ?";
 
 var list = new List<MemoryQueryResult?>();
 
