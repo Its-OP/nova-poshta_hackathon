@@ -10,7 +10,7 @@ import (
 	ws "github.com/Its-OP/novaposhtahack/pkg/websocket"
 )
 
-func main() {
+func main1() {
 	azureKey := os.Getenv("AZURE_KEY")
 	if azureKey == "" {
 		log.Fatal("AZURE_KEY environment variable is not set")
