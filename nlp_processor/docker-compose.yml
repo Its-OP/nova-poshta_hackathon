@@ -7,6 +7,6 @@ services:
       context: .
       dockerfile: nlp_processor/Dockerfile
     ports:
-      - "7034:7034"
+      - "7034:443"
     env_file:
       .env

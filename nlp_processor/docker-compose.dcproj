@@ -4,8 +4,8 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>901be3a0-fb60-4cf9-8329-9424171bfbde</ProjectGuid>
-    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
+	  <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
+	  <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>nlp_processor</DockerServiceName>
 	<DockerComposeProjectName>blue-cloud</DockerComposeProjectName>
   </PropertyGroup>
