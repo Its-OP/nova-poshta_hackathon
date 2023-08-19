@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type AzureTTS struct {
@@ -18,6 +19,7 @@ func NewAzureTTS(region, key string) *AzureTTS {
 
 func (tts *AzureTTS) ConvertTextToSpeech(text string) ([]byte, error) {
 	url := fmt.Sprintf("https://%s.tts.speech.microsoft.com/cognitiveservices/v1", tts.region)
+	text = strings.Replace(text, "✔️", "-", -1)
 	xmlPayload := fmt.Sprintf(`<speak version='1.0' xml:lang='uk-UA'>
     <voice xml:lang='uk-UA' xml:gender='Female' name='uk-UA-PolinaNeural'>
         %s 

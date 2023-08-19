@@ -6,28 +6,27 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Its-OP/novaposhtahack/pkg/speech_assistant/azure"
-	ws "github.com/Its-OP/novaposhtahack/pkg/websocket"
+	"github.com/Its-OP/novaposhtahack/pkg/websocket"
 )
 
-func main1() {
-	azureKey := os.Getenv("AZURE_KEY")
-	if azureKey == "" {
+func main() {
+	speechKey := os.Getenv("AZURE_KEY")
+	if speechKey == "" {
 		log.Fatal("AZURE_KEY environment variable is not set")
 	}
 
-	azureRegion := os.Getenv("AZURE_REGION")
-	if azureRegion == "" {
+	speechRegion := os.Getenv("AZURE_REGION")
+	if speechRegion == "" {
 		log.Fatal("AZURE_REGION environment variable is not set")
 	}
 
-	endpoint := fmt.Sprintf("https://%s.tts.speech.microsoft.com/cognitiveservices/v1", azureRegion)
-	azureTTS := azure.NewAzureTTS(azureKey, endpoint)
+	stt := websocket.NewAzureSTT(speechRegion, speechKey)
+	tts := websocket.NewAzureTTS(speechRegion, speechKey)
 
-	websocket := ws.NewWebSocket(azureTTS)
+	websocket := websocket.NewWebSocket(tts, stt)
 
 	http.HandleFunc("/audio-to-text", websocket.AudioToTextHandler)
 	http.HandleFunc("/text-to-audio", websocket.TextToAudioHandler)
 	fmt.Println("WebSocket server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
 }
