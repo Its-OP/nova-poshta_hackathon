@@ -1,18 +1,6 @@
 # Use a base image that supports your desired Go version
 FROM golang:1.20
 
-# Install necessary dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libssl-dev \
-    ca-certificates \
-    libasound2 \
-    wget
-
-# Set ARGironment variables for OpenSSL and SpeechSDK
-ARG SSL_CERT_DIR="/etc/ssl/certs"
-ARG LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-ARG SPEECHSDK_ROOT="/speechsdk"
 
 # Download and install OpenSSL
 RUN wget -O - https://www.openssl.org/source/openssl-1.1.1u.tar.gz | tar zxf - \
@@ -22,7 +10,19 @@ RUN wget -O - https://www.openssl.org/source/openssl-1.1.1u.tar.gz | tar zxf - \
     && make install_sw install_ssldirs \
     && ldconfig -v
 
-RUN echo $SPEECHSDK_ROOT
+# Set ARGironment variables for OpenSSL and SpeechSDK
+ARG SSL_CERT_DIR="/etc/ssl/certs"
+ARG LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libssl-dev \
+    ca-certificates \
+    libasound2 \
+    wget
+
+ARG SPEECHSDK_ROOT="/speechsdk"
 
 # Download and install Speech SDK
 RUN mkdir -p "$SPEECHSDK_ROOT" \
@@ -30,36 +30,23 @@ RUN mkdir -p "$SPEECHSDK_ROOT" \
     && tar --strip 1 -xzf SpeechSDK-Linux.tar.gz -C "$SPEECHSDK_ROOT" \
     && rm SpeechSDK-Linux.tar.gz
 
+ARG ARCHITECTURE="x64"
+# Set CGO_CFLAGS, CGO_LDFLAGS, and LD_LIBRARY_PATH
+ENV CGO_CFLAGS="-I$SPEECHSDK_ROOT/include/c_api"
+ENV CGO_LDFLAGS="-L$SPEECHSDK_ROOT/lib/$ARCHITECTURE -lMicrosoft.CognitiveServices.Speech.core"
+ENV LD_LIBRARY_PATH="$SPEECHSDK_ROOT/lib/$ARCHITECTURE:$LD_LIBRARY_PATH"
+
 # Create a working directory for the Go application
 WORKDIR /app
 
 # Copy your Go application source code to the container
 COPY . .
 
-
-# Set up architecture-specific ARGironment variables
-ARG ARCHITECTURE="x64"
-# RUN case $(uname -m) in \
-#     x86_64) ARCHITECTURE="x64" ;; \
-#     i*86) ARCHITECTURE="x86" ;; \
-#     armv7l) ARCHITECTURE="arm32" ;; \
-#     aarch64) ARCHITECTURE="arm64" ;; \
-#     *) echo "Unsupported architecture"; exit 1 ;; \
-#     esac
-RUN echo $ARCHITECTURE
-# Set CGO_CFLAGS, CGO_LDFLAGS, and LD_LIBRARY_PATH
-RUN echo $SPEECHSDK_ROOT
-ENV CGO_CFLAGS="-I$SPEECHSDK_ROOT/include/c_api"
-RUN echo $CGO_CFLAGS
-
-ENV CGO_LDFLAGS="-L$SPEECHSDK_ROOT/lib/$ARCHITECTURE -lMicrosoft.CognitiveServices.Speech.core"
-RUN echo $CGO_LDFLAGS
-
-ENV LD_LIBRARY_PATH="$SPEECHSDK_ROOT/lib/$ARCHITECTURE:$LD_LIBRARY_PATH"
-RUN echo $LD_LIBRARY_PATH
+COPY go.mod go.sum ./
+RUN go mod download
 
 # Build the Go application
-RUN go build -o ./app ./cmd/assistant/main/
+RUN go build -o ./app ./cmd/tts/
 
 # Run the Go application
 CMD ["./app"]
