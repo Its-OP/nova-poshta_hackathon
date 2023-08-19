@@ -13,12 +13,17 @@
     "parameters": [
       {
         "name": "input",
-        "description": "The user's request.",
+        "description": "User's request.",
         "defaultValue": ""
       },
       {
         "name": "options",
         "description": "The options to choose from.",
+        "values": ""
+      },
+      {
+        "name": "history",
+        "description": "The conversation history of AI Assistant and User.",
         "values": ""
       }
     ]

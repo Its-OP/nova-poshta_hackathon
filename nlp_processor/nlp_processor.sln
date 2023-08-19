@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetDeliveryDate", "GetDeliv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nlp_processor", "nlp_processor\nlp_processor.csproj", "{1B17FFA3-274A-4E39-8835-EF55A40E4765}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetInvoice", "GetInvoice\GetInvoice.csproj", "{10A32BDC-9742-4045-AA01-5336B2132083}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

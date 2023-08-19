@@ -1,9 +1,8 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.SkillDefinition;
 using nlp_processor.Services.Utils;
-using System.Text.RegularExpressions;
-using GetInvoice;
 
 namespace nlp_processor.Services;
 
@@ -12,22 +11,30 @@ public class ProcessorService : IProcessorService
     private readonly IKernel _kernel;
     private readonly IDictionary<string, ISKFunction> _orchestrationPlugin;
     private readonly IDictionary<string, ISKFunction> _counselingPlugin;
+    private readonly IMemoryCache _memoryCache;
 
-    public ProcessorService(IKernel kernel)
+    public ProcessorService(IKernel kernel, IMemoryCache memoryCache)
     {
         _kernel = kernel;
         var pluginsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
         _orchestrationPlugin = _kernel.ImportSemanticSkillFromDirectory(pluginsDirectory, "OrchestratorPlugin");
         _counselingPlugin = _kernel.ImportSemanticSkillFromDirectory(pluginsDirectory, "ConsultationPlugin");
+        _memoryCache = memoryCache;
     }
 
     public async Task<string> Process(string input)
     {
-        var intention = await GetClassification(input);
+        var history = string.Empty;
+        if (_memoryCache.TryGetValue("history", out var value))
+        {
+            history = (string)value!;
+        }
+
+        var intention = await GetClassification(input, history);
 
         var response = intention switch
         {
-            $"{nameof(GetCounselingOnCompanyProcessesAndServices)}" => await GetCounselingOnCompanyProcessesAndServices(input),
+            $"{nameof(GetCounselingOnCompanyProcessesAndServices)}" => await GetCounselingOnCompanyProcessesAndServices(input, history),
             $"{nameof(GetInformationAboutConcreteShipment)}" => await GetInformationAboutConcreteShipment(input),
             _ => "Failed to understand the prompt"
         };
@@ -35,10 +42,11 @@ public class ProcessorService : IProcessorService
         return response;
     }
 
-    private async Task<string> GetClassification(string input)
+    private async Task<string> GetClassification(string input, string history)
     {
         var context = _kernel.CreateNewContext();
         context.Variables["input"] = input;
+        context.Variables["history"] = history;
         context.Variables["options"] = $"{nameof(GetCounselingOnCompanyProcessesAndServices)}, {nameof(GetInformationAboutConcreteShipment)}, CalculateDeliveryPrice";
 
         var result = await _orchestrationPlugin[nameof(GetClassification)].InvokeAsync(context);
@@ -46,26 +54,18 @@ public class ProcessorService : IProcessorService
         return result.Result;
     }
 
-    private async Task<string> GetCounselingOnCompanyProcessesAndServices(string input)
+    private async Task<string> GetCounselingOnCompanyProcessesAndServices(string input, string history)
     {
-        await _kernel.SaveDocumentToMemory(Utils.Utils.GetTextFromPdf("Terms_of_Service.pdf"));
-
         var context = _kernel.CreateNewContext();
+        var memorySkill = new TextMemorySkill(_kernel.Memory);
+        _kernel.ImportSkill(memorySkill);
 
-        var list = new List<MemoryQueryResult?>();
+        context.Variables[TextMemorySkill.CollectionParam] = "collection";
+        context.Variables[TextMemorySkill.LimitParam] = "3";
+        context.Variables[TextMemorySkill.RelevanceParam] = "0.8";
 
-        await foreach (var item in _kernel.Memory.SearchAsync("collection", input, 5))
-        {
-            list.Add(item);
-        }
-
-        if (!list.Any())
-        {
-            return "Failed to find any relevant information";
-        }
-
-        context.Variables["context"] = list.First()!.Metadata.Text;
         context.Variables["input"] = input;
+        context.Variables["history"] = history;
 
         var result = await _counselingPlugin[nameof(GetCounselingOnCompanyProcessesAndServices)].InvokeAsync(context);
 

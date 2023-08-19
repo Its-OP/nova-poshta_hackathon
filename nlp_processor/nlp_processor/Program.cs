@@ -1,18 +1,26 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI.TextEmbedding;
+using Microsoft.SemanticKernel.Connectors.Memory.AzureCognitiveSearch;
 using Microsoft.SemanticKernel.Memory;
 using nlp_processor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var modelKey = File.ReadAllText(".key.txt");
+var azureKey = File.ReadAllText(".azure-key.txt");
+
 // Add services to the container.
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IProcessorService, ProcessorService>();
+builder.Services.AddScoped<IDocumentsService, DocumentsService>();
+
+var memoryStore = new AzureCognitiveSearchMemoryStore("https://database.search.windows.net", azureKey);
+
 builder.Services.AddScoped<IKernel>(_ =>
 {
     var kernel = new KernelBuilder()
-        .WithMemory(new SemanticTextMemory(new VolatileMemoryStore(), new OpenAITextEmbeddingGeneration("text-embedding-ada-002", modelKey)))
-        .WithOpenAIChatCompletionService("gpt-3.5-turbo", modelKey)
+        .WithMemory(new SemanticTextMemory(memoryStore, new OpenAITextEmbeddingGeneration("text-embedding-ada-002", modelKey)))
+        .WithOpenAIChatCompletionService("gpt-4", modelKey)
         .Build();
 
     return kernel;
