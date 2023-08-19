@@ -6,32 +6,43 @@
 </template>
 
 <script>
-import {ref} from 'vue';
+import { ref } from 'vue';
 import RecordRTC from 'recordrtc';
 
 export default {
   name: 'AudioRecorder',
   setup() {
-    // const socket = this.$socket;
     const recorder = ref(null);
     const isRecording = ref(false);
     const mediaStream = ref(null);
 
+    const saveRecordingToLocal = (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = 'recording.wav';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    };
+
     const startRecording = async () => {
       mediaStream.value = await navigator.mediaDevices.getUserMedia({ audio: true });
-      recorder.value = new RecordRTC(mediaStream.value, {type: 'audio'});
+      recorder.value = new RecordRTC(mediaStream.value, {
+        type: 'audio',
+        mimeType: 'audio/wav',
+        recorderType: RecordRTC.StereoAudioRecorder,
+        numberOfAudioChannels: 1
+      });
       recorder.value.startRecording();
       isRecording.value = true;
     };
 
     const stopRecording = () => {
-      recorder.value.stopRecording(async () => {
+      recorder.value.stopRecording(() => {
         const blob = recorder.value.getBlob();
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(blob);
-        reader.onloadend = (event) => {
-          // socket.emit('send-audio', reader.result);
-        };
+        saveRecordingToLocal(blob);
         isRecording.value = false;
       });
       if (mediaStream.value) {
