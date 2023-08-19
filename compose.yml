@@ -7,6 +7,7 @@ services:
     ports:
       # - "8080:8080"
       - "5000:5000"
+    network_mode: "host"
 
   io-service:
     build:
@@ -14,6 +15,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+      # - "7034:7034"
+    network_mode: "host"
   # nlp_processor:
   #   container_name: nlp_processor
   #   build:
