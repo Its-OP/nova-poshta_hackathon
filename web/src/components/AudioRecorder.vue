@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import RecordRTC from 'recordrtc';
 
 export default {
@@ -15,6 +15,24 @@ export default {
     const recorder = ref(null);
     const isRecording = ref(false);
     const mediaStream = ref(null);
+    // TODO: specify the correct websocket URL
+    const socket = new WebSocket('ws://localhost:8080/echo');
+
+    onMounted(() => {
+      socket.addEventListener('message', (event) => {
+        playReceivedAudio(event.data);
+      });
+    });
+
+    onUnmounted(() => {
+      socket.close();
+    });
+
+    const playReceivedAudio = (audioData) => {
+      const blob = new Blob([audioData], { type: 'audio/wav' });
+      const audio = new Audio(URL.createObjectURL(blob));
+      audio.play();
+    };
 
     const saveRecordingToLocal = (blob) => {
       const url = window.URL.createObjectURL(blob);
@@ -43,8 +61,16 @@ export default {
       recorder.value.stopRecording(() => {
         const blob = recorder.value.getBlob();
         saveRecordingToLocal(blob);
+
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onloadend = (event) => {
+          socket.send(reader.result);
+        };
+
         isRecording.value = false;
       });
+
       if (mediaStream.value) {
         mediaStream.value.getTracks().forEach(track => track.stop());
         mediaStream.value = null;
