@@ -15,24 +15,21 @@ type TextToSpeech interface {
 	ConvertTextToSpeech(string) ([]byte, error)
 }
 
-type SpeechAssistant interface {
-	SpeechToText
-	TextToSpeech
-}
-
 type WebSocket struct {
-	upgrader        websocket.Upgrader
-	speachAssistant SpeechAssistant
+	upgrader websocket.Upgrader
+	tts      TextToSpeech
+	stt      SpeechToText
 }
 
-func NewWebSocket(speachAssistant SpeechAssistant) *WebSocket {
+func NewWebSocket(tts TextToSpeech, stt SpeechToText) *WebSocket {
 	return &WebSocket{
 		upgrader: websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
 				return true
 			},
 		},
-		speachAssistant: speachAssistant,
+		tts: tts,
+		stt: stt,
 	}
 }
 
@@ -51,7 +48,7 @@ func (ws *WebSocket) AudioToTextHandler(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		text, err := ws.speachAssistant.ConvertSpeechToText(p)
+		text, err := ws.stt.ConvertSpeechToText(p)
 		if err != nil {
 			log.Println(err)
 			return
@@ -79,7 +76,7 @@ func (ws *WebSocket) TextToAudioHandler(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		audio, err := ws.speachAssistant.ConvertTextToSpeech(string(p))
+		audio, err := ws.tts.ConvertTextToSpeech(string(p))
 		if err != nil {
 			log.Println(err)
 			return
