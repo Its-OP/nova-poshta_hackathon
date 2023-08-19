@@ -2,7 +2,6 @@
 using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI.TextEmbedding;
-using System.Threading;
 
 var modelKey = File.ReadAllText(".key.txt");
 
