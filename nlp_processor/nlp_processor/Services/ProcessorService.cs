@@ -2,6 +2,8 @@
 using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.SkillDefinition;
 using nlp_processor.Services.Utils;
+using System.Text.RegularExpressions;
+using GetInvoice;
 
 namespace nlp_processor.Services;
 
@@ -72,7 +74,28 @@ public class ProcessorService : IProcessorService
 
     private async Task<string> GetInformationAboutConcreteShipment(string input)
     {
-        return "test";
+        string shipmentPattern = @"\d{14}";
+        string phoneNumberPattern = @"380\d{9)}";
+
+        var mathes = Regex.Matches(input, shipmentPattern).ToList();
+
+        if (mathes.Count > 0)
+        {
+            var invoiceDTO = await InvoiceHandler.RequestInvoiceAsync(mathes[0].ToString());
+
+            if (invoiceDTO.Success)
+            {
+                return invoiceDTO.Data[0].ToString();
+            }
+            else
+            {
+                return String.Join("\n", invoiceDTO.Errors);
+            }
+        }
+        else
+        {
+            return "Будь ласка, введіть номер накладної (14 цифр).";
+        }
     }
 }
 

@@ -36,6 +36,11 @@ namespace GetInvoice
         public string Number { get; set; }
         [JsonPropertyName("Status")]
         public string Status { get; set; }
+
+        override public string ToString()
+        {
+            return $"Номер накладної: {Number}\nСтатус посилки: {Status}";
+        }
     }
 
     public struct InvoiceRepsonse
@@ -51,7 +56,7 @@ namespace GetInvoice
     public static class InvoiceHandler
     {
         static HttpClient client = new HttpClient();
-        static string apiKey = File.ReadAllText(".apikey");
+        static string apiKey = "";
         static string urlBase = "https://api.novaposhta.ua/v2.0/json/";
 
         static InvoiceHandler()

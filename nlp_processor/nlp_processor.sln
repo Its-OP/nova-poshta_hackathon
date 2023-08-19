@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetTosFunction", "GetTosFun
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetPolicyFunction", "GetPolicyFunction\GetPolicyFunction.csproj", "{63E20EC8-221C-48DB-B4EA-644888C3A136}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetDeliveryDate", "GetDeliveryDate\GetDeliveryDate.csproj", "{FBD592B3-F059-4BF1-BBAA-C61C486297B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetDeliveryDate", "GetDeliveryDate\GetDeliveryDate.csproj", "{FBD592B3-F059-4BF1-BBAA-C61C486297B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nlp_processor", "nlp_processor\nlp_processor.csproj", "{1B17FFA3-274A-4E39-8835-EF55A40E4765}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nlp_processor", "nlp_processor\nlp_processor.csproj", "{1B17FFA3-274A-4E39-8835-EF55A40E4765}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetInvoice", "GetInvoice\GetInvoice.csproj", "{10A32BDC-9742-4045-AA01-5336B2132083}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{1B17FFA3-274A-4E39-8835-EF55A40E4765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B17FFA3-274A-4E39-8835-EF55A40E4765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B17FFA3-274A-4E39-8835-EF55A40E4765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10A32BDC-9742-4045-AA01-5336B2132083}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A32BDC-9742-4045-AA01-5336B2132083}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A32BDC-9742-4045-AA01-5336B2132083}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A32BDC-9742-4045-AA01-5336B2132083}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

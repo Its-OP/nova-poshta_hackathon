@@ -50,4 +50,8 @@
     <Folder Include="Plugins\ConsultationPlugin\GetShipmentCounseling\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GetInvoice\GetInvoice.csproj" />
+  </ItemGroup>
+
 </Project>

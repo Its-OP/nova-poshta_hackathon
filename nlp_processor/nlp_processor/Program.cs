@@ -12,7 +12,7 @@ builder.Services.AddScoped<IKernel>(_ =>
 {
     var kernel = new KernelBuilder()
         .WithMemory(new SemanticTextMemory(new VolatileMemoryStore(), new OpenAITextEmbeddingGeneration("text-embedding-ada-002", modelKey)))
-        .WithOpenAIChatCompletionService("gpt-4", modelKey)
+        .WithOpenAIChatCompletionService("gpt-3.5-turbo", modelKey)
         .Build();
 
     return kernel;
