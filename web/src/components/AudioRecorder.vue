@@ -7,8 +7,9 @@
       <button class="btn btn-primary" @click="startRecording" v-if="!isRecording">Start Recording</button>
       <button class="btn btn-danger" @click="stopRecording" v-if="isRecording">Stop Recording</button>
     </div>
-
-
+  </div>
+  <div class="input-group mb-3">
+    <p v-if="receivedTextMessage">Асистент: </p> {{ receivedTextMessage }}
   </div>
 </template>
 
@@ -23,6 +24,8 @@ export default {
     const isRecording = ref(false);
     const mediaStream = ref(null);
     const message = ref(null);
+    const receivedTextMessage = ref('');
+
 
     // TODO: specify the correct websocket URL
     const socket = new WebSocket('ws://localhost:8080/audio-to-text');
@@ -62,6 +65,10 @@ export default {
       return utf8;
     }
 
+    function utf8FromBinary(encoded) {
+      return decodeURIComponent(escape(window.atob(encoded)));
+    }
+
 
     onMounted(() => {
       socket.addEventListener('message', (event) => {
@@ -71,7 +78,7 @@ export default {
           playReceivedAudio(base64ToArrayBuffer(data.payload));
         } else if (data.type === 'text') {
           console.log('Received text message:', data.payload);
-          // Handle the text message as needed
+          receivedTextMessage.value = utf8FromBinary(data.payload);
         }
       });
     });
@@ -150,6 +157,7 @@ export default {
       startRecording,
       stopRecording,
       sendMessage,
+      receivedTextMessage,
     };
   }
 };
