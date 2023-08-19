@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"os"
+	"io/ioutil"
+	"log"
+
+	"github.com/Its-OP/novaposhtahack/pkg/websocket"
 )
 
 func main() {
@@ -12,39 +13,14 @@ func main() {
 	speechRegion := "eastus"
 	audioFilePath := "/files/output.wav"
 
-	url := fmt.Sprintf("https://%s.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=uk-UA&format=detailed", speechRegion)
-
-	file, err := os.Open(audioFilePath)
+	data, err := ioutil.ReadFile(audioFilePath)
 	if err != nil {
-		fmt.Println("Error opening audio file:", err)
-		return
-	}
-	defer file.Close()
-
-	client := &http.Client{}
-
-	req, err := http.NewRequest("POST", url, file)
-	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return
+		log.Fatal(err)
 	}
 
-	req.Header.Set("Ocp-Apim-Subscription-Key", speechKey)
-	req.Header.Set("Content-Type", "audio/wav")
-
-	resp, err := client.Do(req)
+	text, err := websocket.NewAzureSTT(speechRegion, speechKey).ConvertSpeechToText(data)
 	if err != nil {
-		fmt.Println("Error sending request:", err)
-		return
+		log.Fatal(err)
 	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading response:", err)
-		return
-	}
-
-	fmt.Println("Response:", resp.Status)
-	fmt.Println("Body:", string(body))
+	fmt.Println(text)
 }

@@ -46,7 +46,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Build the Go application
-RUN go build -o ./app ./cmd/tts/
+RUN go build -o ./app ./cmd/stt/
 
 # Run the Go application
 CMD ["./app"]
