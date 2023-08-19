@@ -1,7 +1,8 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.SkillDefinition;
-using nlp_processor.Services.Utils;
+using Microsoft.SemanticKernel.Skills.Core;
 
 namespace nlp_processor.Services;
 
@@ -10,13 +11,15 @@ public class ProcessorService : IProcessorService
     private readonly IKernel _kernel;
     private readonly IDictionary<string, ISKFunction> _orchestrationPlugin;
     private readonly IDictionary<string, ISKFunction> _counselingPlugin;
+    private readonly IMemoryCache _memoryCache;
 
-    public ProcessorService(IKernel kernel)
+    public ProcessorService(IKernel kernel, IMemoryCache memoryCache)
     {
         _kernel = kernel;
         var pluginsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
         _orchestrationPlugin = _kernel.ImportSemanticSkillFromDirectory(pluginsDirectory, "OrchestratorPlugin");
         _counselingPlugin = _kernel.ImportSemanticSkillFromDirectory(pluginsDirectory, "ConsultationPlugin");
+        _memoryCache = memoryCache;
     }
 
     public async Task<string> Process(string input)
@@ -47,19 +50,13 @@ public class ProcessorService : IProcessorService
     private async Task<string> GetCounselingOnCompanyProcessesAndServices(string input)
     {
         var context = _kernel.CreateNewContext();
+        var memorySkill = new TextMemorySkill(_kernel.Memory);
+        _kernel.ImportSkill(memorySkill);
 
-        var list = new List<MemoryQueryResult?>();
+        context.Variables[TextMemorySkill.CollectionParam] = "collection";
+        context.Variables[TextMemorySkill.LimitParam] = "3";
+        context.Variables[TextMemorySkill.RelevanceParam] = "0.8";
 
-        await foreach (var item in _kernel.Memory.SearchAsync("collection", input, minRelevanceScore: 0.8, limit: 15))
-        {
-            list.Add(item);
-        }
-        if (!list.Any())
-        {
-            return "Failed to find any relevant information";
-        }
-
-        context.Variables["context"] = list.First()!.Metadata.Text;
         context.Variables["input"] = input;
 
         var result = await _counselingPlugin[nameof(GetCounselingOnCompanyProcessesAndServices)].InvokeAsync(context);
