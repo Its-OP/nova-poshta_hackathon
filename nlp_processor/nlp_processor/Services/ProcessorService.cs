@@ -1,13 +1,14 @@
-﻿using Microsoft.SemanticKernel;
+﻿namespace nlp_processor.Services;
 
-namespace nlp_processor.Services;
-
-public class ProcessorService
+public class ProcessorService : IProcessorService
 {
-    private IKernel _kernel;
-
-    public ProcessorService(IKernel kernel)
+    public Task<string> Process(string input)
     {
-        _kernel = kernel;
+
     }
+}
+
+public interface IProcessorService
+{
+    Task<string> Process(string input);
 }
