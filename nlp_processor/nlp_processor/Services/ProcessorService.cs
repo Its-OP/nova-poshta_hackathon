@@ -18,7 +18,7 @@ public class ProcessorService : IProcessorService
     private readonly IDictionary<string, ISKFunction> _counselingPlugin;
     private readonly IMemoryCache _memoryCache;
 
-    private string? _shipmentInfo = null;
+    static private string? _shipmentInfo = null;
 
     public ProcessorService(IKernel kernel, IMemoryCache memoryCache)
     {
