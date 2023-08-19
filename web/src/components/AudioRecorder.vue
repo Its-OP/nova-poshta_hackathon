@@ -1,12 +1,19 @@
 <template>
   <div class="d-flex justify-content-center">
-    <button class="btn btn-primary" @click="startRecording" v-if="!isRecording">Start Recording</button>
-    <button class="btn btn-danger" @click="stopRecording" v-if="isRecording">Stop Recording</button>
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Enter your message" v-model="message">
+
+      <button class="btn btn-success" @click="sendMessage">Send Message</button>
+      <button class="btn btn-primary" @click="startRecording" v-if="!isRecording">Start Recording</button>
+      <button class="btn btn-danger" @click="stopRecording" v-if="isRecording">Stop Recording</button>
+    </div>
+
+
   </div>
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import {onMounted, onUnmounted, ref} from 'vue';
 import RecordRTC from 'recordrtc';
 
 export default {
@@ -15,12 +22,20 @@ export default {
     const recorder = ref(null);
     const isRecording = ref(false);
     const mediaStream = ref(null);
+    const message = ref(null);
+
     // TODO: specify the correct websocket URL
     const socket = new WebSocket('ws://localhost:8080/echo');
 
     onMounted(() => {
       socket.addEventListener('message', (event) => {
-        playReceivedAudio(event.data);
+        const data = JSON.parse(event.data);
+        if (data.type === 'wav') {
+          playReceivedAudio(new Uint8Array(data.payload));
+        } else if (data.type === 'text') {
+          console.log('Received text message:', data.payload);
+          // Handle the text message as needed
+        }
       });
     });
 
@@ -29,7 +44,7 @@ export default {
     });
 
     const playReceivedAudio = (audioData) => {
-      const blob = new Blob([audioData], { type: 'audio/wav' });
+      const blob = new Blob([audioData], {type: 'audio/wav'});
       const audio = new Audio(URL.createObjectURL(blob));
       audio.play();
     };
@@ -46,7 +61,7 @@ export default {
     };
 
     const startRecording = async () => {
-      mediaStream.value = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStream.value = await navigator.mediaDevices.getUserMedia({audio: true});
       recorder.value = new RecordRTC(mediaStream.value, {
         type: 'audio',
         mimeType: 'audio/wav',
@@ -65,7 +80,12 @@ export default {
         const reader = new FileReader();
         reader.readAsArrayBuffer(blob);
         reader.onloadend = (event) => {
-          socket.send(reader.result);
+          const byteArray = new Uint8Array(reader.result);
+          const data = {
+            type: 'wav',
+            payload: Array.from(byteArray)
+          };
+          socket.send(JSON.stringify(data));
         };
 
         isRecording.value = false;
@@ -77,10 +97,22 @@ export default {
       }
     };
 
+    const sendMessage = (e) => {
+      const data = {
+        type: 'text',
+        payload: message.value
+      };
+      socket.send(JSON.stringify(data));
+      message.value = '';
+    };
+
+
     return {
       isRecording,
+      message,
       startRecording,
-      stopRecording
+      stopRecording,
+      sendMessage,
     };
   }
 };
