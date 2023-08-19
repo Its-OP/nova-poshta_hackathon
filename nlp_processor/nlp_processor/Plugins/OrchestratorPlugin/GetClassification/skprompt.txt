@@ -1,0 +1,7 @@
+INSTRUCTIONS:
+User asks you a question in Ukrainian.
+Classify the question of the user. The question should fall under one of the next category: {{$options}}
+If you are not confident about assigning any category, respond with 'Other'.
+
+---------------------------------------------
+User: {{$input}}
