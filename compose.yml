@@ -1,0 +1,16 @@
+version: '3'
+services:
+  np-web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "5000:5000"
+
+  io-service:
+    build:
+      context: ./io-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
