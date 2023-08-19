@@ -9,20 +9,28 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Install Vite globally (if needed)
+RUN npm install -g vite
+
 # Copy the rest of the application
 COPY . .
 
-# Build the application
+# Build the application using Vite
 RUN npm run build
 
-# Step 2: Serve the application using Nginx
-FROM nginx:1.19.0-alpine AS production-stage
+# Serve the application using a lightweight server like serve
+FROM node:latest AS production-stage
+
+WORKDIR /app
+
+# Install serve globally
+RUN npm install -g serve
 
 # Copy the built application from the previous stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY --from=build-stage /app/dist /app
 
-# Expose port 80
-EXPOSE 80
+# Expose port 5000 for serve
+EXPOSE 5000
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start serve
+CMD ["serve", "-s", "/app", "-l", "5000"]
