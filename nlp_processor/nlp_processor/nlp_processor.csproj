@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Services\Plugins\ConsultationPlugin\GetTosCounseling\config.json" />
-    <Content Remove="Services\Plugins\OrchestratorPlugin\GetClassification\config.json" />
+    <Content Remove="Plugins\ConsultationPlugin\GetCounselingOnCompanyProcessesAndServices\config.json" />
+    <Content Remove="Plugins\OrchestratorPlugin\GetClassification\config.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,24 +23,31 @@
     <None Update=".key.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Services\Plugins\ConsultationPlugin\GetTosCounseling\skprompt.txt">
+    <None Update="Plugins\ConsultationPlugin\GetCounselingOnCompanyProcessesAndServices\skprompt.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Services\Plugins\OrchestratorPlugin\GetClassification\skprompt.txt">
+    <None Update="Plugins\OrchestratorPlugin\GetClassification\skprompt.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Services\Terms_of_Service.pdf">
+    <None Update="Terms_of_Service.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="content_ukr.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Services\Plugins\ConsultationPlugin\GetTosCounseling\config.json">
+    <None Include="Plugins\ConsultationPlugin\GetCounselingOnCompanyProcessesAndServices\config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Services\Plugins\OrchestratorPlugin\GetClassification\config.json">
+    <None Include="Plugins\OrchestratorPlugin\GetClassification\config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Plugins\ConsultationPlugin\GetShipmentCounseling\" />
   </ItemGroup>
 
 </Project>

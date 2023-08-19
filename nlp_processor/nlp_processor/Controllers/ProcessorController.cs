@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using nlp_processor.DTOs;
 using nlp_processor.Services;
 
 namespace nlp_processor.Controllers;
@@ -14,8 +15,8 @@ public class ProcessorController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<string>> Process([FromBody] string input)
+    public async Task<ActionResult<string>> Process([FromBody] InputDTO input)
     {
-        return await _service.Process(input);
+        return await _service.Process(input.Text);
     }
 }

@@ -19,7 +19,7 @@
       {
         "name": "options",
         "description": "The options to choose from.",
-        "values": "GetInformationAboutProcessesOfCompany, GetShippmentInformation, CalculateDeliveryPrice"
+        "values": ""
       }
     ]
   }

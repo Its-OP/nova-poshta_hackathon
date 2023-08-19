@@ -23,19 +23,28 @@ public class ProcessorService : IProcessorService
     {
         var intention = await GetClassification(input);
 
+        var response = intention switch
+        {
+            $"{nameof(GetCounselingOnCompanyProcessesAndServices)}" => await GetCounselingOnCompanyProcessesAndServices(input),
+            $"{nameof(GetInformationAboutConcreteShipment)}" => await GetInformationAboutConcreteShipment(input),
+            _ => "Failed to understand the prompt"
+        };
+
+        return response;
     }
 
     private async Task<string> GetClassification(string input)
     {
         var context = _kernel.CreateNewContext();
         context.Variables["input"] = input;
+        context.Variables["options"] = $"{nameof(GetCounselingOnCompanyProcessesAndServices)}, {nameof(GetInformationAboutConcreteShipment)}, CalculateDeliveryPrice";
 
         var result = await _orchestrationPlugin[nameof(GetClassification)].InvokeAsync(context);
 
         return result.Result;
     }
 
-    private async Task<string> GetTosCounseling(string input)
+    private async Task<string> GetCounselingOnCompanyProcessesAndServices(string input)
     {
         await _kernel.SaveDocumentToMemory(Utils.Utils.GetTextFromPdf("Terms_of_Service.pdf"));
 
@@ -56,9 +65,14 @@ public class ProcessorService : IProcessorService
         context.Variables["context"] = list.First()!.Metadata.Text;
         context.Variables["input"] = input;
 
-        var result = await _counselingPlugin[nameof(GetTosCounseling)].InvokeAsync(context);
+        var result = await _counselingPlugin[nameof(GetCounselingOnCompanyProcessesAndServices)].InvokeAsync(context);
 
         return result.Result;
+    }
+
+    private async Task<string> GetInformationAboutConcreteShipment(string input)
+    {
+        return "test";
     }
 }
 

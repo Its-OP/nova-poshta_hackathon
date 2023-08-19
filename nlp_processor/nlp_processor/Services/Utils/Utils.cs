@@ -28,7 +28,7 @@ public static class Utils
         text = await File.ReadAllTextAsync("content_ukr.txt");
         var targetCollectionName = "collection";
 
-        string pattern = @"(?<=\n|^)(\d+\.\d+\.)(?!\d)";
+        var pattern = @"(?<=\n|^)(\d+\.\d+\.)(?!\d)";
         var sections = Regex.Split(text, pattern);
 
         var chunks = new List<string>();
