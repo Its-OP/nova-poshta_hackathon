@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetTosFunction", "GetTosFun
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetPolicyFunction", "GetPolicyFunction\GetPolicyFunction.csproj", "{63E20EC8-221C-48DB-B4EA-644888C3A136}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetDeliveryDate", "GetDeliveryDate\GetDeliveryDate.csproj", "{FBD592B3-F059-4BF1-BBAA-C61C486297B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetDeliveryDate", "GetDeliveryDate\GetDeliveryDate.csproj", "{FBD592B3-F059-4BF1-BBAA-C61C486297B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nlp_processor", "nlp_processor\nlp_processor.csproj", "{1B17FFA3-274A-4E39-8835-EF55A40E4765}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nlp_processor", "nlp_processor\nlp_processor.csproj", "{1B17FFA3-274A-4E39-8835-EF55A40E4765}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

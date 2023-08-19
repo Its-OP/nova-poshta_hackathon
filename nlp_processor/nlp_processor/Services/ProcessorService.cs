@@ -46,17 +46,14 @@ public class ProcessorService : IProcessorService
 
     private async Task<string> GetCounselingOnCompanyProcessesAndServices(string input)
     {
-        await _kernel.SaveDocumentToMemory(Utils.Utils.GetTextFromPdf("Terms_of_Service.pdf"));
-
         var context = _kernel.CreateNewContext();
 
         var list = new List<MemoryQueryResult?>();
 
-        await foreach (var item in _kernel.Memory.SearchAsync("collection", input, 5))
+        await foreach (var item in _kernel.Memory.SearchAsync("collection", input, minRelevanceScore: 0.8, limit: 15))
         {
             list.Add(item);
         }
-
         if (!list.Any())
         {
             return "Failed to find any relevant information";
