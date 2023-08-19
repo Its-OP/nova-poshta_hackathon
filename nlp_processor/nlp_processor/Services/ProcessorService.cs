@@ -24,11 +24,17 @@ public class ProcessorService : IProcessorService
 
     public async Task<string> Process(string input)
     {
-        var intention = await GetClassification(input);
+        var history = string.Empty;
+        if (_memoryCache.TryGetValue("history", out var value))
+        {
+            history = (string)value!;
+        }
+
+        var intention = await GetClassification(input, history);
 
         var response = intention switch
         {
-            $"{nameof(GetCounselingOnCompanyProcessesAndServices)}" => await GetCounselingOnCompanyProcessesAndServices(input),
+            $"{nameof(GetCounselingOnCompanyProcessesAndServices)}" => await GetCounselingOnCompanyProcessesAndServices(input, history),
             $"{nameof(GetInformationAboutConcreteShipment)}" => await GetInformationAboutConcreteShipment(input),
             _ => "Failed to understand the prompt"
         };
@@ -36,10 +42,11 @@ public class ProcessorService : IProcessorService
         return response;
     }
 
-    private async Task<string> GetClassification(string input)
+    private async Task<string> GetClassification(string input, string history)
     {
         var context = _kernel.CreateNewContext();
         context.Variables["input"] = input;
+        context.Variables["history"] = history;
         context.Variables["options"] = $"{nameof(GetCounselingOnCompanyProcessesAndServices)}, {nameof(GetInformationAboutConcreteShipment)}, CalculateDeliveryPrice";
 
         var result = await _orchestrationPlugin[nameof(GetClassification)].InvokeAsync(context);
@@ -47,7 +54,7 @@ public class ProcessorService : IProcessorService
         return result.Result;
     }
 
-    private async Task<string> GetCounselingOnCompanyProcessesAndServices(string input)
+    private async Task<string> GetCounselingOnCompanyProcessesAndServices(string input, string history)
     {
         var context = _kernel.CreateNewContext();
         var memorySkill = new TextMemorySkill(_kernel.Memory);
@@ -58,6 +65,7 @@ public class ProcessorService : IProcessorService
         context.Variables[TextMemorySkill.RelevanceParam] = "0.8";
 
         context.Variables["input"] = input;
+        context.Variables["history"] = history;
 
         var result = await _counselingPlugin[nameof(GetCounselingOnCompanyProcessesAndServices)].InvokeAsync(context);
 

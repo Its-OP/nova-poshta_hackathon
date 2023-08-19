@@ -5,4 +5,6 @@ Classify the question of the user. The question should fall under one of the nex
 If you are not confident about assigning any category, respond with 'Other'.
 
 ---------------------------------------------
+History: {{$history}}
+
 User: {{$input}}

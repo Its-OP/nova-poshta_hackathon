@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.SemanticKernel;
 using nlp_processor.DTOs;
 using nlp_processor.Services;
 
@@ -13,13 +12,13 @@ public class ProcessorController : Controller
     private readonly IProcessorService _service;
     private readonly IMemoryCache _memoryCache;
 
-    public ProcessorController(IProcessorService service, IMemoryCache memoryCache, IKernel kernel)
+    public ProcessorController(IProcessorService service, IMemoryCache memoryCache)
     {
         _service = service;
         _memoryCache = memoryCache;
     }
 
-    [HttpPost]
+    [HttpPost("process")]
     public async Task<ActionResult<string>> Process([FromBody] InputDTO input)
     {
         var response = await _service.Process(input.Text);
@@ -30,7 +29,7 @@ public class ProcessorController : Controller
         return response;
     }
 
-    [HttpPost]
+    [HttpPost("erase")]
     public ActionResult EraseHistory()
     {
         _memoryCache.Remove("history");
