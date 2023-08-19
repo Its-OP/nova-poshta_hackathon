@@ -1,1 +1,8 @@
 /.idea/
+﻿obj/
+bin/
+.vs/
+nlp_processor/GetTosFunction/.key.txt
+.key.txt
+nlp_processor/nlp_processor/.azure-key.txt
+nlp_processor/.env

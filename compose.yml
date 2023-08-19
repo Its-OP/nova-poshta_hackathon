@@ -5,12 +5,20 @@ services:
       context: ./web
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      # - "8080:8080"
       - "5000:5000"
 
   io-service:
     build:
-      context: ./io-service
+      context: ./io_service
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+  # nlp_processor:
+  #   container_name: nlp_processor
+  #   build:
+  #     context: ./nlp_processor
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "7034:7034"
+  #   env_file: nlp_processor/.env
