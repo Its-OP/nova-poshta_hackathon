@@ -20,6 +20,11 @@
         "name": "context",
         "description": "The context that you must use to produce the optimal answer.",
         "defaultValue": ""
+      },
+      {
+        "name": "examples",
+        "description": "Examples of correct classification",
+        "defaultValue": ""
       }
     ]
   }
