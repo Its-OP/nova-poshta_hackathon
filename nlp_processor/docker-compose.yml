@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  nlp_processor:
+    container_name: nlp_processor
+    build:
+      context: .
+      dockerfile: nlp_processor/Dockerfile
+    ports:
+      - "7034:443"
+    env_file:
+      .env
