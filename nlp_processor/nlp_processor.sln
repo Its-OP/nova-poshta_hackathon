@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetDeliveryDate", "GetDeliv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "nlp_processor", "nlp_processor\nlp_processor.csproj", "{1B17FFA3-274A-4E39-8835-EF55A40E4765}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetInvoice", "GetInvoice\GetInvoice.csproj", "{4D10FA21-858E-4982-BD28-38914CA939AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,10 +41,10 @@ Global
 		{1B17FFA3-274A-4E39-8835-EF55A40E4765}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B17FFA3-274A-4E39-8835-EF55A40E4765}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B17FFA3-274A-4E39-8835-EF55A40E4765}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10A32BDC-9742-4045-AA01-5336B2132083}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10A32BDC-9742-4045-AA01-5336B2132083}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10A32BDC-9742-4045-AA01-5336B2132083}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10A32BDC-9742-4045-AA01-5336B2132083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D10FA21-858E-4982-BD28-38914CA939AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D10FA21-858E-4982-BD28-38914CA939AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D10FA21-858E-4982-BD28-38914CA939AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D10FA21-858E-4982-BD28-38914CA939AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

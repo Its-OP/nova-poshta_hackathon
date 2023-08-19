@@ -1,8 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Skills.Core;
 using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.SkillDefinition;
 using nlp_processor.Services.Utils;
+using System.Text.RegularExpressions;
+using GetInvoice;
+using System.Text.Json;
 
 namespace nlp_processor.Services;
 
@@ -12,6 +16,8 @@ public class ProcessorService : IProcessorService
     private readonly IDictionary<string, ISKFunction> _orchestrationPlugin;
     private readonly IDictionary<string, ISKFunction> _counselingPlugin;
     private readonly IMemoryCache _memoryCache;
+
+    private string? _shipmentInfo = null;
 
     public ProcessorService(IKernel kernel, IMemoryCache memoryCache)
     {
@@ -35,7 +41,7 @@ public class ProcessorService : IProcessorService
         var response = intention switch
         {
             $"{nameof(GetCounselingOnCompanyProcessesAndServices)}" => await GetCounselingOnCompanyProcessesAndServices(input, history),
-            $"{nameof(GetInformationAboutConcreteShipment)}" => await GetInformationAboutConcreteShipment(input),
+            $"{nameof(GetInformationAboutConcreteShipment)}" => await GetInformationAboutConcreteShipment(input, history),
             _ => "Failed to understand the prompt"
         };
 
@@ -72,30 +78,45 @@ public class ProcessorService : IProcessorService
         return result.Result;
     }
 
-    private async Task<string> GetInformationAboutConcreteShipment(string input)
+    private async Task<string> TryGetShipmentNumberFromInput(string input)
     {
-        string shipmentPattern = @"\d{14}";
-        string phoneNumberPattern = @"380\d{9)}";
+        if (_shipmentInfo != null)
+            return _shipmentInfo;
 
+        string shipmentPattern = @"\d{14}";
         var mathes = Regex.Matches(input, shipmentPattern).ToList();
 
         if (mathes.Count > 0)
         {
-            var invoiceDTO = await InvoiceHandler.RequestInvoiceAsync(mathes[0].ToString());
-
-            if (invoiceDTO.Success)
+            try
             {
-                return invoiceDTO.Data[0].ToString();
+                _shipmentInfo = JsonSerializer.Serialize(await InvoiceHandler.RequestInvoiceAsync(mathes[0].ToString()));
+                return _shipmentInfo;
             }
-            else
+            catch (Exception ex)
             {
-                return String.Join("\n", invoiceDTO.Errors);
+                return ex.Message;
             }
         }
         else
         {
-            return "Будь ласка, введіть номер накладної (14 цифр).";
+            return "Please, enter shipment number (14 digits).";
         }
+    }
+
+    private async Task<string> GetInformationAboutConcreteShipment(string input, string history)
+    {
+        var context = _kernel.CreateNewContext();
+
+        _kernel.ImportSkill(new TimeSkill(), "time");
+
+        context.Variables["history"] = history;
+        context.Variables["input"] = input;
+
+        context.Variables["shipmentInfo"] = await TryGetShipmentNumberFromInput(input);
+
+        var result = await _counselingPlugin[nameof(GetInformationAboutConcreteShipment)].InvokeAsync(context);
+        return result.Result;
     }
 }
 

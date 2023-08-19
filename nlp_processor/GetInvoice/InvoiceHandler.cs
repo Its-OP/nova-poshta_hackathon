@@ -36,11 +36,14 @@ namespace GetInvoice
         public string Number { get; set; }
         [JsonPropertyName("Status")]
         public string Status { get; set; }
-
-        override public string ToString()
-        {
-            return $"Номер накладної: {Number}\nСтатус посилки: {Status}";
-        }
+        [JsonPropertyName("DocumentCost")]
+        public string DocumentCost { get; set; }
+        [JsonPropertyName("ScheduledDeliveryDate")]
+        public string ScheduledDeliveryDate { get; set; }
+        [JsonPropertyName("WarehouseRecipientNumber")]
+        public int WarehouseRecipientNumber { get; set; }
+        [JsonPropertyName("WarehouseRecipientAdress")]
+        public string WarehouseRecipientAdress { get; set; }
     }
 
     public struct InvoiceRepsonse
@@ -94,7 +97,6 @@ namespace GetInvoice
             requestMessage.Content = JsonContent.Create(r);
 
             var response = await client.SendAsync(requestMessage);
-            var responseString = await response.Content.ReadAsStringAsync();
 
             return await response.Content.ReadFromJsonAsync<InvoiceRepsonse>();
         }
