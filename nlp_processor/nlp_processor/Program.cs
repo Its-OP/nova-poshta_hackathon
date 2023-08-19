@@ -6,8 +6,8 @@ using nlp_processor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var modelKey = File.ReadAllText(".key.txt");
-var azureKey = File.ReadAllText(".azure-key.txt");
+var modelKey = Environment.GetEnvironmentVariable("OPEN_AI_KEY") ?? string.Empty;
+var azureKey = Environment.GetEnvironmentVariable("AZURE_KEY") ?? string.Empty;
 
 // Add services to the container.
 builder.Services.AddMemoryCache();
