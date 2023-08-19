@@ -1,5 +1,0 @@
-INSTRUCTIONS:
-You are provided with a section of text. The text is in Ukrainian. Summarize the text in less than 500 words. The summary must also be in Ukrainian.
-
----------------------------------------------
-{{$input}}

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.SkillDefinition;
 using Microsoft.SemanticKernel.Skills.Core;
@@ -47,6 +48,7 @@ public class ProcessorService : IProcessorService
         context.Variables["input"] = input;
         context.Variables["history"] = history;
         context.Variables["options"] = $"{nameof(GetCounselingOnCompanyProcessesAndServices)}, {nameof(GetInformationAboutConcreteShipment)}, CalculateDeliveryPrice";
+        context.Variables["examples"] = GetExamples();
 
         var result = await _orchestrationPlugin[nameof(GetClassification)].InvokeAsync(context);
 
@@ -74,6 +76,20 @@ public class ProcessorService : IProcessorService
     private async Task<string> GetInformationAboutConcreteShipment(string input)
     {
         return "test";
+    }
+
+    private static string GetExamples()
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"INPUT - 'Який документ мені потрібен щоб отримати посилку ?', OUTPUT - {nameof(GetCounselingOnCompanyProcessesAndServices)}");
+        sb.AppendLine($"INPUT - 'Чи можна перевозити їжу в посилках ?', OUTPUT - {nameof(GetCounselingOnCompanyProcessesAndServices)}");
+        sb.AppendLine($"INPUT - 'Як мені дізнатись вартість посилки ?', OUTPUT - {nameof(GetCounselingOnCompanyProcessesAndServices)}");
+
+        sb.AppendLine($"INPUT - 'Коли приїде моя посилка ?', OUTPUT - {nameof(GetInformationAboutConcreteShipment)}");
+        sb.AppendLine($"INPUT - 'Який статус має моя посилка ? Її номер - 21907687690432 ?', OUTPUT - {nameof(GetInformationAboutConcreteShipment)}");
+        sb.AppendLine($"INPUT - 'З якого міста їде моя посилка ?', OUTPUT - {nameof(GetInformationAboutConcreteShipment)}");
+
+        return sb.ToString();
     }
 }
 
