@@ -8,7 +8,7 @@ EXPOSE 7034
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["nlp_processor/nlp_processor.csproj", "nlp_processor/"]
+COPY "nlp_processor/nlp_processor.csproj" "nlp_processor/"
 RUN dotnet restore "nlp_processor/nlp_processor.csproj"
 COPY . .
 WORKDIR "/src/nlp_processor"

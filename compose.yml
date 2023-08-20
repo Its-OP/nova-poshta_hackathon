@@ -1,0 +1,27 @@
+version: '3'
+services:
+  np-web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      # - "8080:8080"
+      - "5000:5000"
+    network_mode: "host"
+
+  io-service:
+    build:
+      context: ./io_service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      # - "7034:7034"
+    network_mode: "host"
+  # nlp_processor:
+  #   container_name: nlp_processor
+  #   build:
+  #     context: ./nlp_processor
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "7034:7034"
+  #   env_file: nlp_processor/.env
