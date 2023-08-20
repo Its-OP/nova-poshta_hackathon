@@ -21,12 +21,15 @@ public class ProcessorController : Controller
     [HttpPost("process")]
     public async Task<ActionResult<string>> Process([FromBody] InputDTO input)
     {
+        Console.WriteLine($"Received request: {input.Text}");
         var response = await _service.Process(input.Text);
 
         var history = (string?)_memoryCache.Get("history") ?? string.Empty;
         _memoryCache.Set("history", ConstructHistoryMessage(input.Text, response, history));
 
-        return response;
+        Console.WriteLine($"Sending response: {response}");
+
+        return Json(new { text = response });
     }
 
     [HttpPost("erase")]

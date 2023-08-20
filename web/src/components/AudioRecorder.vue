@@ -72,6 +72,7 @@ export default {
 
     onMounted(() => {
       socket.addEventListener('message', (event) => {
+        console.log("Received response")
         const data = JSON.parse(event.data);
         console.log(data.payload)
         if (data.type === 'wav') {
@@ -146,6 +147,7 @@ export default {
         type: 'text',
         payload: strToUtf8Bytes(message.value)
       };
+      console.log("Sending request")
       socket.send(JSON.stringify(data));
       message.value = '';
     };

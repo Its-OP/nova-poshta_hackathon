@@ -6,8 +6,8 @@ using nlp_processor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var modelKey = Environment.GetEnvironmentVariable("OPEN_AI_KEY") ?? string.Empty;
-var azureKey = Environment.GetEnvironmentVariable("AZURE_KEY") ?? string.Empty;
+var modelKey = Environment.GetEnvironmentVariable("OPEN_AI_KEY") ?? "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";
+var azureKey = Environment.GetEnvironmentVariable("AZURE_KEY") ?? "c6GE0yg9jAJXbmK5hSZXcQyf7bjF4TPZWm9qIyH4BBAzSeCLOLKP";
 
 // Add services to the container.
 builder.Services.AddMemoryCache();
@@ -39,8 +39,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

@@ -151,7 +151,7 @@ func (ws *WebSocket) TextToAudioHandler(w http.ResponseWriter, r *http.Request) 
 }
 
 func sendToNlpProcessor(input string) (string, error) {
-	url := "http://localhost:7034/processor/process"
+	url := "http://nlp_processor:80/processor/process"
 	payload := map[string]string{
 		"text": input,
 	}
@@ -185,6 +185,7 @@ func sendToNlpProcessor(input string) (string, error) {
 	}
 
 	var response map[string]string
+	fmt.Println("Printing: " + " " + string(respBody))
 	err = json.Unmarshal(respBody, &response)
 	if err != nil {
 		fmt.Println("Error unmarshaling response:", err)
