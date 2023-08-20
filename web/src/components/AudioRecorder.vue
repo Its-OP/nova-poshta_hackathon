@@ -1,4 +1,11 @@
 <template>
+  <!--  bootstrap loader -->
+  <div class="d-flex justify-content-center m-2">
+    <div class="spinner-border mx-2" role="status" v-if="isProcessing">
+    </div>
+    <span class="sr-only">Thinking...</span>
+  </div>
+
   <div class="d-flex justify-content-center">
     <div class="input-group mb-3">
       <input type="text" class="form-control" placeholder="Enter your message" v-model="message">
@@ -10,7 +17,10 @@
     </div>
   </div>
   <div class="input-group mb-3">
-    <p v-if="receivedTextMessage">Асистент: </p> {{ receivedTextMessage }}
+    <p v-if="receivedTextMessage">Асистент: </p>
+    <p>
+      {{ receivedTextMessage }}
+    </p>
   </div>
 </template>
 
@@ -23,6 +33,7 @@ export default {
   setup() {
     const recorder = ref(null);
     const isRecording = ref(false);
+    const isProcessing = ref(false);
     const mediaStream = ref(null);
     const message = ref(null);
     const receivedTextMessage = ref('');
@@ -74,6 +85,7 @@ export default {
     onMounted(() => {
       socket.addEventListener('message', (event) => {
         console.log("Received response")
+        isProcessing.value = false;
         const data = JSON.parse(event.data);
         console.log(data.payload)
         if (data.type === 'wav') {
@@ -93,17 +105,6 @@ export default {
       const blob = new Blob([audioData], {type: 'audio/wav'});
       const audio = new Audio(URL.createObjectURL(blob));
       audio.play();
-    };
-
-    const saveRecordingToLocal = (blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = 'recording.wav';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
     };
 
     const startRecording = async () => {
@@ -135,6 +136,7 @@ export default {
         };
 
         isRecording.value = false;
+        isProcessing.value = true;
       });
 
       if (mediaStream.value) {
@@ -151,6 +153,8 @@ export default {
       console.log("Sending request")
       socket.send(JSON.stringify(data));
       message.value = '';
+
+      isProcessing.value = true;
     };
 
     const deleteHistory = async () => {
@@ -175,6 +179,7 @@ export default {
 
     return {
       isRecording,
+      isProcessing,
       message,
       startRecording,
       stopRecording,
