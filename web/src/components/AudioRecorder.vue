@@ -6,6 +6,7 @@
       <button class="btn btn-success" @click="sendMessage">Send Message</button>
       <button class="btn btn-primary" @click="startRecording" v-if="!isRecording">Start Recording</button>
       <button class="btn btn-danger" @click="stopRecording" v-if="isRecording">Stop Recording</button>
+      <button class="btn btn-outline-danger" @click="deleteHistory">Delete history</button>
     </div>
   </div>
   <div class="input-group mb-3">
@@ -14,7 +15,7 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted, ref } from 'vue';
+import {onMounted, onUnmounted, ref} from 'vue';
 import RecordRTC from 'recordrtc';
 
 export default {
@@ -55,10 +56,10 @@ export default {
           // splitting the 20 bits of 0x0-0xFFFFF into two halves
           charCode = 0x10000 + (((charCode & 0x3ff) << 10) | (str.charCodeAt(ii) & 0x3ff));
           utf8.push(
-            0xf0 | (charCode >> 18),
-            0x80 | ((charCode >> 12) & 0x3f),
-            0x80 | ((charCode >> 6) & 0x3f),
-            0x80 | (charCode & 0x3f),
+              0xf0 | (charCode >> 18),
+              0x80 | ((charCode >> 12) & 0x3f),
+              0x80 | ((charCode >> 6) & 0x3f),
+              0x80 | (charCode & 0x3f),
           );
         }
       }
@@ -89,7 +90,7 @@ export default {
     });
 
     const playReceivedAudio = (audioData) => {
-      const blob = new Blob([audioData], { type: 'audio/wav' });
+      const blob = new Blob([audioData], {type: 'audio/wav'});
       const audio = new Audio(URL.createObjectURL(blob));
       audio.play();
     };
@@ -106,7 +107,7 @@ export default {
     };
 
     const startRecording = async () => {
-      mediaStream.value = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStream.value = await navigator.mediaDevices.getUserMedia({audio: true});
       recorder.value = new RecordRTC(mediaStream.value, {
         type: 'audio',
         mimeType: 'audio/wav',
@@ -152,6 +153,25 @@ export default {
       message.value = '';
     };
 
+    const deleteHistory = async () => {
+      try {
+        const response = await fetch('http://localhost:7034/processor/erase', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('History deleted:', responseData);
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error.message);
+      }
+    };
 
     return {
       isRecording,
@@ -159,6 +179,7 @@ export default {
       startRecording,
       stopRecording,
       sendMessage,
+      deleteHistory,
       receivedTextMessage,
     };
   }
