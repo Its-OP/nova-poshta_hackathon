@@ -155,7 +155,7 @@ export default {
 
     const deleteHistory = async () => {
       try {
-        const response = await fetch('http://localhost:7034/processor/erase', {
+        const response = await fetch('http://localhost:5058/processor/erase', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

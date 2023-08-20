@@ -29,6 +29,9 @@
     <None Update="Plugins\ConsultationPlugin\GetCounselingOnCompanyProcessesAndServices\skprompt.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Plugins\ConsultationPlugin\GetInformationAboutConcreteShipment\skprompt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Plugins\OrchestratorPlugin\GetClassification\skprompt.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -52,6 +55,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GetInvoice\GetInvoice.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Plugins\ConsultationPlugin\GetInformationAboutConcreteShipment\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

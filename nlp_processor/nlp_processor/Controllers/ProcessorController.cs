@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using nlp_processor.DTOs;
@@ -36,7 +37,8 @@ public class ProcessorController : Controller
     public ActionResult EraseHistory()
     {
         _memoryCache.Remove("history");
-        return Ok("History erased");
+        Console.WriteLine("Erased");
+        return Ok(new { text = "History erased" });
     }
 
     private static string ConstructHistoryMessage(string request, string response, string history)
