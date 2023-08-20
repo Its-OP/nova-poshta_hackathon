@@ -43,7 +43,7 @@ public class ProcessorService : IProcessorService
         {
             $"{nameof(GetCounselingOnCompanyProcessesAndServices)}" => await GetCounselingOnCompanyProcessesAndServices(input, history),
             $"{nameof(GetInformationAboutConcreteShipment)}" => await GetInformationAboutConcreteShipment(input, history),
-            _ => "Failed to understand the prompt"
+            _ => "Я не зрозуміла ваш запит. Будь-ласка, повторить його"
         };
 
         return response;
