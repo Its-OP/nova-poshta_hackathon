@@ -13,6 +13,9 @@ services:
     build:
       context: ./io_service
       dockerfile: Dockerfile
+    environment:
+      - AZURE_KEY="b96fde6174d945ec8d91219bfc87896e"
+      - AZURE_REGION="eastus"
     ports:
       - "8080:8080"
 

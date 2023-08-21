@@ -48,8 +48,5 @@ RUN go mod download
 # Build the Go application
 RUN go build -o ./app ./cmd/assistant/main
 
-ENV AZURE_KEY="b96fde6174d945ec8d91219bfc87896e"
-ENV AZURE_REGION="eastus"
-
 # Run the Go application
 CMD ["./app"]
